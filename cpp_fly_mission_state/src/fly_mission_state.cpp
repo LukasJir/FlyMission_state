@@ -117,15 +117,15 @@ namespace mission
         drone_latitude = drone_pos.latitude_deg;     //aktualni zem. sirka dronu
         drone_longitude = drone_pos.longitude_deg;   //aktualni zem. vyska dronu
 
-        p1 = {last_waypoint_latitude*(M_PI/180.0), last_waypoint_longitude*(M_PI/180.0)};
-        p2 = {next_waypoint_latitude*(M_PI/180.0), next_waypoint_longitude*(M_PI/180.0)};
+        //p1 = {last_waypoint_latitude*(M_PI/180.0), last_waypoint_longitude*(M_PI/180.0)};
+        //p2 = {next_waypoint_latitude*(M_PI/180.0), next_waypoint_longitude*(M_PI/180.0)};
         p_d = {drone_latitude*(M_PI/180.0), drone_longitude*(M_PI/180.0)};
 
-        double R = 6371000;
-        float x1 = R*std::cos(p1[0])*std::cos(p1[1]);
-        float y1 = R*std::cos(p1[0])*std::sin(p1[1]);
-        float x2 = R*std::cos(p2[0])*std::cos(p2[1]);
-        float y2 = R*std::cos(p2[0])*std::sin(p2[1]);
+        //double R = 6371000;
+        //float x1 = R*std::cos(p1[0])*std::cos(p1[1]);
+        //float y1 = R*std::cos(p1[0])*std::sin(p1[1]);
+        //float x2 = R*std::cos(p2[0])*std::cos(p2[1]);
+        //float y2 = R*std::cos(p2[0])*std::sin(p2[1]);
         x_d = R*std::cos(p_d[0])*std::cos(p_d[1]);
         y_d = R*std::cos(p_d[0])*std::sin(p_d[1]);
 /*
@@ -139,8 +139,8 @@ namespace mission
         
         drone_avoid_latitude = drone_pos_avoid.latitude_deg;
         drone_avoid_longitude = drone_pos_avoid.longitude_deg;
-        x = R*std::cos(drone_avoid_latitude*(M_PI/180.0))*std::cos(drone_avoid_longitude*(M_PI/180.0));
-        y = R*std::cos(drone_latitude*(M_PI/180.0))*std::sin(drone_longitude*(M_PI/180.0));
+        //x = R*std::cos(drone_avoid_latitude*(M_PI/180.0))*std::cos(drone_avoid_longitude*(M_PI/180.0));
+        //y = R*std::cos(drone_latitude*(M_PI/180.0))*std::sin(drone_longitude*(M_PI/180.0));
 
         distance_avoid = (std::sqrt(std::pow(drone_latitude-drone_avoid_latitude,2)+std::pow(drone_longitude-drone_avoid_longitude,2)))*10000; 
         //std::cout << "distance_avoid:" << distance_avoid << '\n';
@@ -216,7 +216,7 @@ namespace mission
                     std::cout << "state:" << state << '\n';
 
                     if(avoid_right){
-                        _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 0.0f}); //let dopredu s otacenim
+                        _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 0.0f}); //let dopredu
                     }else{
                         _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 0.0f});
                     }
@@ -273,7 +273,7 @@ namespace mission
                 // we risk blocking the system.
                 want_to_pause = true;
             }
-
+/*
             waypoint = mission_progress.current;    //index nasledujiciho waypointu
 
             mavsdk::Mission::MissionItem next_waypoint = mission_items[waypoint];   //nasledujici waypoint
@@ -288,7 +288,7 @@ namespace mission
             }else{
                 last_waypoint_latitude = last_waypoint.latitude_deg;        //zem. sirka predchoziho waypointu
                 last_waypoint_longitude = last_waypoint.longitude_deg;      //zem. vyska predchoziho waypointu
-            }
+            }*/
         });
 
         mavsdk::Mission::Result start_mission_result = _mission.get()->start_mission();     //start mise
@@ -308,7 +308,7 @@ namespace mission
 
         if(trasa == 1){
             mission_items.push_back(make_mission_item(
-                37.4125,
+                37.4124,
                 -121.9989,
                 14.3f,      //20 bez prekazek
                 5.0f,
@@ -455,7 +455,7 @@ namespace mission
             throw std::runtime_error("Takeoff timeout error");
         }
 
-        drone_start_pos = _telemetry->position();    //startovni pozice dronu
+        //drone_start_pos = _telemetry->position();    //startovni pozice dronu
     }
 
     void FlyMission::cbTakeOff(const std::shared_ptr<std_srvs::srv::Trigger::Request> aRequest, const std::shared_ptr<std_srvs::srv::Trigger::Response> aResponse)
