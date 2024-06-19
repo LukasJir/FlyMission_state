@@ -95,14 +95,13 @@ namespace mission
         float depth_threshold_center = 9;
         float depth_threshold_side = 4.5;
  
-        if(in_air && !flag_distance_avoid && (depthValue_center < depth_threshold_center || depthValue_left < depth_threshold_side || depthValue_right < depth_threshold_side)){
+        if(in_air && (depthValue_center < depth_threshold_center || depthValue_left < depth_threshold_side || depthValue_right < depth_threshold_side)){ 
             std::cout << "Obstacle detected! Avoiding.\n";
-            flag_avoid = true;
-            //avoid();
+            state = 0;
+            flag_avoid = true;   
         }
 
         if(flag_distance_avoid && (distance_avoid > 0.5)){
-            std::cout << "if distance avoid:" << distance_avoid << '\n';
             state = 5;
             flag_avoid = true;
         }
@@ -224,9 +223,11 @@ namespace mission
                     }
                     
                     flag_avoid = false;
-                    distance_avoid = 0;
-                    std::cout << "distance_avoid:" << distance_avoid << '\n';
                     flag_distance_avoid = true;
+                    distance_avoid = 0;  
+                    depthValue_center = 20;
+                    depthValue_left = 20;
+                    depthValue_right = 20;
                     
                     break;
 
@@ -255,7 +256,7 @@ namespace mission
 
                     flag_avoid = false;
                     flag_distance_avoid = false;
-                    state = 0;
+                    break;
             }
         }
     }
@@ -304,7 +305,7 @@ namespace mission
 
         mission_items.push_back(make_mission_item(
             37.4125,
-            -121.9987,
+            -121.9989,
             14.0f,      //14 prekazky, 20 bez
             3.0f,
             false,
@@ -333,8 +334,8 @@ namespace mission
             mavsdk::Mission::MissionItem::CameraAction::None));
 
         mission_items.push_back(make_mission_item(
-            37.4125,
-            -121.9981,
+            37.4129,
+            -121.9987,
             14.0f,
             3.0f,
             true,
