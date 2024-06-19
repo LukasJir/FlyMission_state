@@ -141,11 +141,10 @@ namespace mission
         drone_avoid_longitude = drone_pos_avoid.longitude_deg;
         x = R*std::cos(drone_avoid_latitude*(M_PI/180.0))*std::cos(drone_avoid_longitude*(M_PI/180.0));
         y = R*std::cos(drone_latitude*(M_PI/180.0))*std::sin(drone_longitude*(M_PI/180.0));
-        //distance_avoid = std::sqrt(std::pow(x_d-x,2)+std::pow(y_d-y,2)); 
 
         distance_avoid = (std::sqrt(std::pow(drone_latitude-drone_avoid_latitude,2)+std::pow(drone_longitude-drone_avoid_longitude,2)))*10000; 
-        std::cout << "distance_avoid:" << distance_avoid << '\n';
-        std::cout << "flag_avoid:" << flag_avoid << '\n';
+        //std::cout << "distance_avoid:" << distance_avoid << '\n';
+        //std::cout << "flag_avoid:" << flag_avoid << '\n';
 
         //std::cout << "next_waypoint_latitude:" << next_waypoint_latitude << '\n';
         //std::cout << "next_waypoint_longitude:" << next_waypoint_longitude << '\n';
