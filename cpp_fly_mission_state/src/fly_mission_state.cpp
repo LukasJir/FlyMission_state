@@ -311,7 +311,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4125,
                 -121.9989,
-                14.0f,      //14 prekazky, 20 bez
+                14.3f,      //20 bez prekazek
                 5.0f,
                 false,
                 -90.0f,
@@ -321,7 +321,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4128,
                 -121.9998,
-                14.0f,
+                14.3f,
                 5.0f,
                 false,
                 -90.0f,
@@ -331,7 +331,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4135,
                 -121.9993,
-                14.0f,
+                14.3f,
                 5.0f,
                 false,
                 -90.0f,
@@ -341,7 +341,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4129,
                 -121.9987,
-                14.0f,
+                14.3f,
                 5.0f,
                 true,
                 -45.0f,
