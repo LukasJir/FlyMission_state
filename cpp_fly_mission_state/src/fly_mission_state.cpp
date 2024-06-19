@@ -93,7 +93,7 @@ namespace mission
         avoid();
 
         float depth_threshold_center = 9;
-        float depth_threshold_side = 4.5;
+        float depth_threshold_side = 5;
  
         if(in_air && (depthValue_center < depth_threshold_center || depthValue_left < depth_threshold_side || depthValue_right < depth_threshold_side)){ 
             std::cout << "Obstacle detected! Avoiding.\n";
@@ -217,9 +217,9 @@ namespace mission
                     std::cout << "state:" << state << '\n';
 
                     if(avoid_right){
-                        _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, -20.0f}); //let dopredu s otacenim
+                        _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 0.0f}); //let dopredu s otacenim
                     }else{
-                        _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 20.0f});
+                        _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 0.0f});
                     }
                     
                     flag_avoid = false;
@@ -303,45 +303,125 @@ namespace mission
     {
         std::cout << "Creating and uploading mission\n";
 
-        mission_items.push_back(make_mission_item(
-            37.4125,
-            -121.9989,
-            14.0f,      //14 prekazky, 20 bez
-            3.0f,
-            false,
-            -90.0f,
-            30.0f,
-            mavsdk::Mission::MissionItem::CameraAction::None));
+        //trasa = 1;
+        trasa = 2;
+        //trasa = 3;
 
-        mission_items.push_back(make_mission_item(
-            37.4128,
-            -121.9998,
-            14.0f,
-            3.0f,
-            false,
-            -90.0f,
-            30.0f,
-            mavsdk::Mission::MissionItem::CameraAction::None));
+        if(trasa == 1){
+            mission_items.push_back(make_mission_item(
+                37.4125,
+                -121.9989,
+                14.0f,      //14 prekazky, 20 bez
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
 
-        mission_items.push_back(make_mission_item(
-            37.4135,
-            -121.9993,
-            14.0f,
-            3.0f,
-            false,
-            -90.0f,
-            30.0f,
-            mavsdk::Mission::MissionItem::CameraAction::None));
+            mission_items.push_back(make_mission_item(
+                37.4128,
+                -121.9998,
+                14.0f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
 
-        mission_items.push_back(make_mission_item(
-            37.4129,
-            -121.9987,
-            14.0f,
-            3.0f,
-            true,
-            -45.0f,
-            0.0f,
-            mavsdk::Mission::MissionItem::CameraAction::None));
+            mission_items.push_back(make_mission_item(
+                37.4135,
+                -121.9993,
+                14.0f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+
+            mission_items.push_back(make_mission_item(
+                37.4129,
+                -121.9987,
+                14.0f,
+                3.0f,
+                true,
+                -45.0f,
+                0.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+        }
+
+        if(trasa == 2){
+            mission_items.push_back(make_mission_item(
+                37.4130,
+                -121.9984,
+                14.3f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+
+            mission_items.push_back(make_mission_item(
+                37.4129,
+                -121.9996,
+                14.3f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+
+            mission_items.push_back(make_mission_item(
+                37.4135,
+                -121.99925,
+                14.3f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+        }
+
+        if(trasa == 3){
+            mission_items.push_back(make_mission_item(
+                37.412,
+                -121.998,
+                14.0f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+
+            mission_items.push_back(make_mission_item(
+                37.412,
+                -121.999,
+                14.0f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+
+            mission_items.push_back(make_mission_item(
+                37.413,
+                -121.999,
+                14.0f,
+                3.0f,
+                false,
+                -90.0f,
+                30.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+
+            mission_items.push_back(make_mission_item(
+                37.412,
+                -121.998,
+                14.0f,
+                3.0f,
+                true,
+                -45.0f,
+                0.0f,
+                mavsdk::Mission::MissionItem::CameraAction::None));
+        }
 
         mavsdk::Mission::MissionPlan mission_plan{};
         mission_plan.mission_items = mission_items;
