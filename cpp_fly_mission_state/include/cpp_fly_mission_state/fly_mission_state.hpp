@@ -79,8 +79,6 @@ namespace mission
         int state = 0;
         double R = 6371000;
         bool avoid_right;
-        float x;
-        float y;
         mavsdk::Telemetry::Position drone_pos_avoid;
         float drone_avoid_latitude;
         float drone_avoid_longitude;
