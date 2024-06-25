@@ -86,7 +86,7 @@ namespace mission
         float drone_avoid_longitude;
         float distance_avoid = 0;
         bool flag_avoid = false;
-        bool flag_distance_avoid = false;
+        int trasa;
 
         rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr _srvUpload;
         void cbUpload(const std::shared_ptr<std_srvs::srv::Trigger::Request> aRequest, const std::shared_ptr<std_srvs::srv::Trigger::Response> aResponse);
