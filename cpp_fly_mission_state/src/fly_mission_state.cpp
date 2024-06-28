@@ -120,6 +120,7 @@ namespace mission
         drone_avoid_longitude = drone_pos_avoid.longitude_deg;
 
         distance_avoid = (std::sqrt(std::pow(drone_latitude-drone_avoid_latitude,2)+std::pow(drone_longitude-drone_avoid_longitude,2)))*10000; 
+        std::cout << "distance_avoid:" << distance_avoid << '\n';
 
         std::cout << "drone_x norm:" << drone_x_norm << '\n';
         std::cout << "drone_y norm:" << drone_y_norm << '\n';
@@ -247,8 +248,8 @@ namespace mission
     {
         std::cout << "Creating and uploading mission\n";
 
-        trasa = 1;
-        //trasa = 2;
+        //trasa = 1;
+        trasa = 2;
         //trasa = 3;
 
         if(trasa == 1){
@@ -297,7 +298,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4130,
                 -121.9984,
-                14.3f,
+                14.4f,
                 5.0f,
                 false,
                 -90.0f,
@@ -307,7 +308,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4129,
                 -121.9996,
-                14.3f,
+                14.4f,
                 5.0f,
                 false,
                 -90.0f,
@@ -317,7 +318,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4135,
                 -121.99925,
-                14.3f,
+                14.4f,
                 5.0f,
                 false,
                 -90.0f,
