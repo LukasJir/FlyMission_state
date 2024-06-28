@@ -58,8 +58,6 @@ namespace mission
         std::atomic<float> drone_latitude;
         std::atomic<float> drone_longitude;
 
-        std::vector<float> p1;
-        std::vector<float> p2;
         std::vector<float> p_d;
 
         std::atomic<float> x_d;
