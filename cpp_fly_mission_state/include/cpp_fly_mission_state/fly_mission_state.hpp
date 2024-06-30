@@ -58,14 +58,14 @@ namespace mission
         std::atomic<float> drone_latitude;
         std::atomic<float> drone_longitude;
 
-        std::vector<float> p_d;
+        //std::vector<float> p_d;
 
-        std::atomic<float> x_d;
-        std::atomic<float> y_d;
+        //std::atomic<float> x_d;
+        //std::atomic<float> y_d;
         std::atomic<float> distance_to_line;
 
-        std::atomic<float> drone_x_norm;
-        std::atomic<float> drone_y_norm;
+        std::atomic<float> drone_lat_norm;
+        std::atomic<float> drone_lon_norm;
 
         std::atomic<uint32_t> width;
         std::atomic<uint32_t> height;
@@ -75,7 +75,7 @@ namespace mission
 
         bool in_air;
         int state = 0;
-        double R = 6371000;
+        double R = 6371000.0;
         bool avoid_right;
         mavsdk::Telemetry::Position drone_pos_avoid;
         float drone_avoid_latitude;
