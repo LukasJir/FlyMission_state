@@ -107,14 +107,20 @@ namespace mission
         drone_pos = _telemetry->position();
         drone_latitude = drone_pos.latitude_deg;     //aktualni zem. sirka dronu
         drone_longitude = drone_pos.longitude_deg;   //aktualni zem. vyska dronu
-
-        p_d = {drone_latitude*(M_PI/180.0), drone_longitude*(M_PI/180.0)};
+/*
+        p_d = {(drone_latitude-30.40)*(M_PI/180.0), (drone_longitude+121.99)*(M_PI/180.0)};
 
         x_d = R*std::cos(p_d[0])*std::cos(p_d[1]);
         y_d = R*std::cos(p_d[0])*std::sin(p_d[1]);
 
-        drone_x_norm = x_d + 2681500;   //souradnice dronu pro vykresleni do grafu
-        drone_y_norm = y_d + 4291460;
+        float x_offset = 2681500.0;
+        float y_offset = 4291460.0;
+
+        drone_x_norm = x_d + x_offset;   
+        drone_y_norm = y_d + y_offset;
+*/
+        drone_lat_norm = (drone_latitude - 37.4130)*100000;     //souradnice dronu pro vykresleni do grafu
+        drone_lon_norm = (drone_longitude + 121.9993)*100000;
 
         drone_avoid_latitude = drone_pos_avoid.latitude_deg;
         drone_avoid_longitude = drone_pos_avoid.longitude_deg;
@@ -122,8 +128,8 @@ namespace mission
         distance_avoid = (std::sqrt(std::pow(drone_latitude-drone_avoid_latitude,2)+std::pow(drone_longitude-drone_avoid_longitude,2)))*10000; 
         std::cout << "distance_avoid:" << distance_avoid << '\n';
 
-        std::cout << "drone_x norm:" << drone_x_norm << '\n';
-        std::cout << "drone_y norm:" << drone_y_norm << '\n';
+        std::cout << "drone_x norm:" << std::fixed << std::setprecision(3) << drone_lat_norm << '\n';
+        std::cout << "drone_y norm:" << std::fixed << std::setprecision(3) << drone_lon_norm << '\n';
     }
 
     void FlyMission::avoid()
@@ -248,8 +254,8 @@ namespace mission
     {
         std::cout << "Creating and uploading mission\n";
 
-        //trasa = 1;
-        trasa = 2;
+        trasa = 1;
+        //trasa = 2;
         //trasa = 3;
 
         if(trasa == 1){
