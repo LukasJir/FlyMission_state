@@ -254,9 +254,9 @@ namespace mission
     {
         std::cout << "Creating and uploading mission\n";
 
-        trasa = 1;
+        //trasa = 1;
         //trasa = 2;
-        //trasa = 3;
+        trasa = 3;
 
         if(trasa == 1){
             mission_items.push_back(make_mission_item(
@@ -336,7 +336,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.41335,
                 -121.9995,
-                14.3f,
+                14.6f,
                 5.0f,
                 false,
                 -90.0f,
