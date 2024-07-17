@@ -18,15 +18,13 @@ find_package(std_msgs REQUIRED)
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(MAVSDK REQUIRED)
-find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(nav_msgs REQUIRED)
 
 include_directories(include)
 
 # Add executables
 add_executable(mission_flier src/fly_mission_state.cpp)
-ament_target_dependencies(mission_flier rclcpp std_srvs Eigen3 std_msgs geometry_msgs sensor_msgs nav_msgs)
+ament_target_dependencies(mission_flier rclcpp std_srvs Eigen3 std_msgs sensor_msgs)
 target_link_libraries(mission_flier
     MAVSDK::mavsdk
 )
