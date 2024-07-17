@@ -23,9 +23,6 @@
 #include "std_srvs/srv/trigger.hpp"
 #include "std_srvs/srv/empty.hpp"
 #include "std_msgs/msg/string.hpp"
-#include "geometry_msgs/msg/twist.hpp"
-#include "geometry_msgs/msg/pose_stamped.hpp"
-#include "nav_msgs/msg/path.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 using namespace std::placeholders;
@@ -55,14 +52,12 @@ namespace mission
 
         mavsdk::Telemetry::Position drone_start_pos;
         mavsdk::Telemetry::Position drone_pos;
+        mavsdk::Telemetry::Position drone_pos_avoid;
+
         std::atomic<float> drone_latitude;
         std::atomic<float> drone_longitude;
-
-        //std::vector<float> p_d;
-
-        //std::atomic<float> x_d;
-        //std::atomic<float> y_d;
-        std::atomic<float> distance_to_line;
+        std::atomic<float> drone_avoid_latitude;
+        std::atomic<float> drone_avoid_longitude;
 
         std::atomic<float> drone_lat_norm;
         std::atomic<float> drone_lon_norm;
@@ -73,16 +68,21 @@ namespace mission
         std::atomic<float> depthValue_left;
         std::atomic<float> depthValue_right;
 
+        float depth_threshold_center;
+        float depth_threshold_side;
+
         bool in_air;
         int state = 0;
         double R = 6371000.0;
         bool avoid_right;
-        mavsdk::Telemetry::Position drone_pos_avoid;
-        float drone_avoid_latitude;
-        float drone_avoid_longitude;
+        
         float distance_avoid = 0;
         bool flag_avoid = false;
         int trasa;
+        double total_distance;
+
+        std::chrono::time_point<std::chrono::steady_clock> start_time_;
+        std::chrono::time_point<std::chrono::steady_clock> end_time_;
 
         rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr _srvUpload;
         void cbUpload(const std::shared_ptr<std_srvs::srv::Trigger::Request> aRequest, const std::shared_ptr<std_srvs::srv::Trigger::Response> aResponse);
