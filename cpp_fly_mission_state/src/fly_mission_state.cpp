@@ -87,8 +87,8 @@ namespace mission
         position();
         avoid();
 
-        float depth_threshold_center = 10;
-        float depth_threshold_side = 5;
+        depth_threshold_center = 10;
+        depth_threshold_side = 5;
  
         if(in_air && (depthValue_center < depth_threshold_center || depthValue_left < depth_threshold_side || depthValue_right < depth_threshold_side)){ 
             std::cout << "Obstacle detected! Avoiding.\n";
@@ -107,18 +107,7 @@ namespace mission
         drone_pos = _telemetry->position();
         drone_latitude = drone_pos.latitude_deg;     //aktualni zem. sirka dronu
         drone_longitude = drone_pos.longitude_deg;   //aktualni zem. vyska dronu
-/*
-        p_d = {(drone_latitude-30.40)*(M_PI/180.0), (drone_longitude+121.99)*(M_PI/180.0)};
 
-        x_d = R*std::cos(p_d[0])*std::cos(p_d[1]);
-        y_d = R*std::cos(p_d[0])*std::sin(p_d[1]);
-
-        float x_offset = 2681500.0;
-        float y_offset = 4291460.0;
-
-        drone_x_norm = x_d + x_offset;   
-        drone_y_norm = y_d + y_offset;
-*/
         drone_lat_norm = (drone_latitude - 37.4130)*100000;     //souradnice dronu pro vykresleni do grafu
         drone_lon_norm = (drone_longitude + 121.9993)*100000;
 
@@ -126,10 +115,31 @@ namespace mission
         drone_avoid_longitude = drone_pos_avoid.longitude_deg;
 
         distance_avoid = (std::sqrt(std::pow(drone_latitude-drone_avoid_latitude,2)+std::pow(drone_longitude-drone_avoid_longitude,2)))*10000; 
+
         std::cout << "distance_avoid:" << distance_avoid << '\n';
 
-        std::cout << "drone_x norm:" << std::fixed << std::setprecision(3) << drone_lat_norm << '\n';
-        std::cout << "drone_y norm:" << std::fixed << std::setprecision(3) << drone_lon_norm << '\n';
+        std::cout << "drone_lat norm:" << std::fixed << std::setprecision(3) << drone_lat_norm << '\n';
+        std::cout << "drone_lon norm:" << std::fixed << std::setprecision(3) << drone_lon_norm << '\n';
+
+        //mereni uletene vzdalenosti
+        static double lat1 = drone_pos.latitude_deg;
+        static double lon1 = drone_pos.longitude_deg;
+
+        double lat2 = drone_pos.latitude_deg;
+        double lon2 = drone_pos.longitude_deg;
+
+        double d_x = (lat2 - lat1)*(M_PI/180.0);
+        double d_y = (lon2 - lon1)*(M_PI/180.0);
+
+        double a = std::pow(std::sin(d_x/2),2) + std::cos(lat1*(M_PI/180.0))*std::cos(lat2*(M_PI/180.0))*std::pow(std::sin(d_y/2),2);
+        double b = R*2*std::atan2(std::sqrt(a), std::sqrt(1 - a));
+
+        total_distance += b;
+
+        std::cout << "Distance traveled:" << std::fixed << std::setprecision(3) << total_distance << " m" << '\n';
+
+        lat1 = lat2;
+        lon1 = lon2;
     }
 
     void FlyMission::avoid()
@@ -196,8 +206,7 @@ namespace mission
                     distance_avoid = 0;  
                     depthValue_center = 20;
                     depthValue_left = 20;
-                    depthValue_right = 20;
-                    
+                    depthValue_right = 20;  
                     break;
 
                 case 5:
@@ -232,15 +241,22 @@ namespace mission
     void FlyMission::cbStartMission(const std::shared_ptr<std_srvs::srv::Trigger::Request> aRequest, const std::shared_ptr<std_srvs::srv::Trigger::Response> aResponse)
     {
         std::atomic<bool> want_to_pause{false};
-        // Before starting the mission, we want to be sure to subscribe to the mission progress.
+        
+        start_time_ = std::chrono::steady_clock::now();     //pocatecni cas
+
         _mission.get()->subscribe_mission_progress([this, &want_to_pause](mavsdk::Mission::MissionProgress mission_progress) {
             std::cout << "Mission status update: " << mission_progress.current << " / "
                     << mission_progress.total << '\n';
 
             if (mission_progress.current >= 2) {
-                // We can only set a flag here. If we do more request inside the callback,
-                // we risk blocking the system.
                 want_to_pause = true;
+            }
+
+            if (mission_progress.current == mission_progress.total) {
+                end_time_ = std::chrono::steady_clock::now();   //koncovy cas
+
+                auto flight_duration = std::chrono::duration_cast<std::chrono::seconds>(end_time_ - start_time_);   //celkovy cas
+                std::cout << "Flight duration: " << flight_duration.count() << " seconds\n";
             }
         });
 
@@ -248,15 +264,17 @@ namespace mission
         if (start_mission_result != mavsdk::Mission::Result::Success) {
             std::cerr << "Starting mission failed: " << start_mission_result << '\n';
         }
+
+        total_distance = 0.0;
     }
 
     void FlyMission::upload()
     {
         std::cout << "Creating and uploading mission\n";
 
-        //trasa = 1;
+        trasa = 1;
         //trasa = 2;
-        trasa = 3;
+        //trasa = 3;
 
         if(trasa == 1){
             mission_items.push_back(make_mission_item(
@@ -432,8 +450,6 @@ namespace mission
         auto prom = std::promise<std::shared_ptr<mavsdk::System>>{};
         auto fut = prom.get_future();
 
-        // We wait for new systems to be discovered, once we find one that has an
-        // autopilot, we decide to use it.
         aMavsdk.subscribe_on_new_system([&aMavsdk, &prom]() {
             auto system = aMavsdk.systems().back();
 
@@ -441,21 +457,17 @@ namespace mission
             {
                 std::cout << "Discovered autopilot\n";
 
-                // Unsubscribe again as we only want to find one system.
                 aMavsdk.subscribe_on_new_system(nullptr);
                 prom.set_value(system);
             }
         });
 
-        // We usually receive heartbeats at 1Hz, therefore we should find a
-        // system after around 3 seconds max, surely.
         if(fut.wait_for(std::chrono::seconds(5)) == std::future_status::timeout)
         {
             std::cerr << "No autopilot found.\n";
             return nullptr;
         }
 
-        // Get discovered system now.
         return fut.get();
     }
 }
