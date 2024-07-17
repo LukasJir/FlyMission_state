@@ -80,9 +80,9 @@ namespace mission
         depthValue_center = depthData[index_center];    //hloubka ve stredu image
         depthValue_left = depthData[index_left];        //hloubka v leve casti image
         depthValue_right = depthData[index_right];      //hloubka v prave casti image
-        std::cout << "depthValue_center:" << depthValue_center << '\n';
-        std::cout << "depthValue_left:" << depthValue_left << '\n';
-        std::cout << "depthValue_right:" << depthValue_right << '\n';
+        std::cout << "depthValue_center: " << depthValue_center << '\n';
+        std::cout << "depthValue_left: " << depthValue_left << '\n';
+        std::cout << "depthValue_right: " << depthValue_right << '\n';
 
         position();
         avoid();
@@ -116,10 +116,10 @@ namespace mission
 
         distance_avoid = (std::sqrt(std::pow(drone_latitude-drone_avoid_latitude,2)+std::pow(drone_longitude-drone_avoid_longitude,2)))*10000; 
 
-        std::cout << "distance_avoid:" << distance_avoid << '\n';
+        std::cout << "distance_avoid: " << distance_avoid << '\n';
 
-        std::cout << "drone_lat norm:" << std::fixed << std::setprecision(3) << drone_lat_norm << '\n';
-        std::cout << "drone_lon norm:" << std::fixed << std::setprecision(3) << drone_lon_norm << '\n';
+        std::cout << "drone_lat norm: " << std::fixed << std::setprecision(3) << drone_lat_norm << '\n';
+        std::cout << "drone_lon norm: " << std::fixed << std::setprecision(3) << drone_lon_norm << '\n';
 
         //mereni uletene vzdalenosti
         static double lat1 = drone_pos.latitude_deg;
@@ -136,7 +136,7 @@ namespace mission
 
         total_distance += b;
 
-        std::cout << "Distance traveled:" << std::fixed << std::setprecision(3) << total_distance << " m" << '\n';
+        std::cout << "Distance traveled: " << std::fixed << std::setprecision(3) << total_distance << " meters" << '\n';
 
         lat1 = lat2;
         lon1 = lon2;
@@ -163,19 +163,19 @@ namespace mission
 
             switch(state){
                 case 0:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
                     drone_pos_avoid = _telemetry->position();   //pocatecni pozice pri uhybani
                     state++;
                 
                 case 1:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
 
                     sleep_for(std::chrono::milliseconds(1000));     //chvili pockat, aby se dron plne zastavil
                     avoid_right = depthValue_right > depthValue_left;   //promenna pro rozhodnuti smeru vyhybani
                     state++;
 
                 case 2:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
 
                     if(avoid_right){
                         std::cout << "Going righthand.\n";
@@ -185,7 +185,7 @@ namespace mission
                     state++;
                     
                 case 3:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
 
                     if(avoid_right){
                         _offboard.get()->set_velocity_body({0.0f, 0.0f, 0.0f, 45.0f});  //otoceni po smeru hodin, 45 stupnu/s
@@ -198,7 +198,7 @@ namespace mission
                     }
 
                 case 4:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
 
                     _offboard.get()->set_velocity_body({3.0f, 0.0f, 0.0f, 0.0f});   //let dopredu
                   
@@ -210,14 +210,14 @@ namespace mission
                     break;
 
                 case 5:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
 
                     _offboard.get()->set_velocity_body({0.0f, 0.0f, 0.0f, 0.0f});   //zastaveni dronu po uhybnem manevru, jinak dela zvlastni pohyby
                     sleep_for(std::chrono::milliseconds(1000));
                     state++;
 
                 case 6:
-                    std::cout << "state:" << state << '\n';
+                    std::cout << "state: " << state << '\n';
 
                     mavsdk::Offboard::Result offboard_result2 = _offboard.get()->stop();    //switch z offboard modu
                     if(offboard_result2 != mavsdk::Offboard::Result::Success) {
@@ -272,8 +272,8 @@ namespace mission
     {
         std::cout << "Creating and uploading mission\n";
 
-        trasa = 1;
-        //trasa = 2;
+        //trasa = 1;
+        trasa = 2;
         //trasa = 3;
 
         if(trasa == 1){
