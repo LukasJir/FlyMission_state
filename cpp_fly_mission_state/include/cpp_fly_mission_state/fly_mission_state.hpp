@@ -62,8 +62,6 @@ namespace mission
         std::atomic<float> drone_lat_norm;
         std::atomic<float> drone_lon_norm;
 
-        std::atomic<uint32_t> width;
-        std::atomic<uint32_t> height;
         std::atomic<float> depthValue_center;
         std::atomic<float> depthValue_left;
         std::atomic<float> depthValue_right;
