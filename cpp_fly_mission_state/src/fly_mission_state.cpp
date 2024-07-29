@@ -67,19 +67,31 @@ namespace mission
 
     void FlyMission::cbDepth(const sensor_msgs::msg::Image::SharedPtr msg) 
     {
-        width = msg->width;
-        height = msg->height;
+        uint32_t width = msg->width;
+        uint32_t height = msg->height;
         uint32_t x_center = width/2;
         uint32_t y_center = height/2;
-        uint32_t x_left = width/100;
-        uint32_t x_right = 99*width/100;
+        uint32_t x_left = width/5;
+        uint32_t x_right = 4*width/5;
         const float* depthData = reinterpret_cast<const float*>(msg->data.data());
-        size_t index_center = y_center * width + x_center;
-        size_t index_right = y_center * width + x_right;
-        size_t index_left = y_center * width + x_left;
-        depthValue_center = depthData[index_center];    //hloubka ve stredu image
-        depthValue_left = depthData[index_left];        //hloubka v leve casti image
-        depthValue_right = depthData[index_right];      //hloubka v prave casti image
+
+        auto find_min_depth = [&](uint32_t x, uint32_t y, int offset_x, int offset_y){  //funkce pro nalezeni minimalni hodnoty hloubky obrazu, pro danou cast projde 25 bodu v obraze (5x5)
+            float min_depth = std::numeric_limits<float>::max();
+            for(int i = -2; i <= 2; ++i){
+                for(int j = -2; j <= 2; ++j){
+                    size_t index = (y + offset_y * i) * width + (x + offset_x * j);
+                    if(index < width * height){
+                        min_depth = std::min(min_depth, depthData[index]);
+                    }
+                }
+            }
+            return min_depth;
+        };
+
+        depthValue_center = find_min_depth(x_center, y_center, 40, 10);     //hodnoty hloubek veprostred, v leve a prave casti
+        depthValue_left = find_min_depth(x_left, y_center, 40, 10);
+        depthValue_right = find_min_depth(x_right, y_center, 40, 10);
+
         std::cout << "depthValue_center: " << depthValue_center << '\n';
         std::cout << "depthValue_left: " << depthValue_left << '\n';
         std::cout << "depthValue_right: " << depthValue_right << '\n';
@@ -273,8 +285,8 @@ namespace mission
         std::cout << "Creating and uploading mission\n";
 
         //trasa = 1;
-        trasa = 2;
-        //trasa = 3;
+        //trasa = 2;
+        trasa = 3;
 
         if(trasa == 1){
             mission_items.push_back(make_mission_item(
@@ -322,7 +334,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4130,
                 -121.9984,
-                14.4f,
+                14.6f,
                 5.0f,
                 false,
                 -90.0f,
@@ -332,7 +344,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.4129,
                 -121.9996,
-                14.4f,
+                14.6f,
                 5.0f,
                 false,
                 -90.0f,
@@ -341,8 +353,8 @@ namespace mission
 
             mission_items.push_back(make_mission_item(
                 37.4135,
-                -121.99925,
-                14.4f,
+                -121.99923,
+                14.6f,
                 5.0f,
                 false,
                 -90.0f,
@@ -354,7 +366,7 @@ namespace mission
             mission_items.push_back(make_mission_item(
                 37.41335,
                 -121.9995,
-                14.6f,
+                16.7f,
                 5.0f,
                 false,
                 -90.0f,
